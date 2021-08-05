@@ -1,0 +1,7 @@
+hotdogs		10
+buns		20
+burger		15
+lettuce		23
+rice		17
+mustard		14
+ketchup		12

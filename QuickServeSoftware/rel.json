@@ -1,0 +1,139 @@
+{
+  "items": [
+    {
+      "name": "Cajun Wrap",
+      "price": 8.99,
+      "type": "ENTRE",
+      "contains": [
+        "lettuce",
+        "chicken",
+        "ranch",
+        "cajun seasoning",
+        "onion",
+        "jalapenos",
+        "tomato"
+      ]
+    },
+    {
+      "name": "BBQ Pizza",
+      "price": 12.99,
+      "type": "ENTRE",
+      "contains": [
+        "barbecue",
+        "chicken",
+        "onion",
+        "pineapple"
+      ]
+    },
+    {
+      "name": "BBQ Pizza",
+      "price": 12.99,
+      "type": "ENTRE",
+      "contains": [
+        "barbecue",
+        "chicken",
+        "onion",
+        "pineapple"
+      ]
+    },
+    {
+      "name": "BBQ Pizza",
+      "price": 12.99,
+      "type": "ENTRE",
+      "contains": [
+        "barbecue",
+        "chicken",
+        "onion",
+        "pineapple"
+      ]
+    },
+    {
+      "name": "BBQ Pizza",
+      "price": 12.99,
+      "type": "ENTRE",
+      "contains": [
+        "barbecue",
+        "chicken",
+        "onion",
+        "pineapple"
+      ]
+    },
+    {
+      "name": "BBQ Pizza",
+      "price": 12.99,
+      "type": "ENTRE",
+      "contains": [
+        "barbecue",
+        "chicken",
+        "onion",
+        "pineapple"
+      ]
+    },
+    {
+      "name": "BBQ Pizza",
+      "price": 12.99,
+      "type": "ENTRE",
+      "contains": [
+        "barbecue",
+        "chicken",
+        "onion",
+        "pineapple"
+      ]
+    },
+    {
+      "name": "BBQ Pizza",
+      "price": 12.99,
+      "type": "ENTRE",
+      "contains": [
+        "barbecue",
+        "chicken",
+        "onion",
+        "pineapple"
+      ]
+    },
+    {
+      "name": "BBQ Pizza",
+      "price": 12.99,
+      "type": "ENTRE",
+      "contains": [
+        "barbecue",
+        "chicken",
+        "onion",
+        "pineapple"
+      ]
+    },
+    {
+      "name": "BBQ Pizza",
+      "price": 12.99,
+      "type": "ENTRE",
+      "contains": [
+        "barbecue",
+        "chicken",
+        "onion",
+        "pineapple"
+      ]
+    },
+    {
+      "name": "BBQ Pizza",
+      "price": 12.99,
+      "type": "ENTRE",
+      "contains": [
+        "barbecue",
+        "chicken",
+        "onion",
+        "pineapple"
+      ]
+    },
+    {
+      "name": "BBQ Pizza",
+      "price": 12.99,
+      "type": "ENTRE",
+      "contains": [
+        "barbecue",
+        "chicken",
+        "onion",
+        "pineapple"
+      ]
+    }
+  ]
+}
