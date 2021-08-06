@@ -21,7 +21,7 @@ public:
 	enum class SYS_STATE { DEFAULT, BUILDING_ORDER };
 
 	QSSystem(std::string inventory);
-	~QSSystem() {}
+	~QSSystem() { }
 
 	void Run();
 
@@ -34,8 +34,6 @@ private:
 	wxPanel* _main = nullptr;
 	Order* _neworder = nullptr;
 	wxButton* _order = nullptr;
-
-	wxButton** _buttons = nullptr;
 
 private:
 	void DefaultState();
