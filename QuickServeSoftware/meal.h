@@ -15,6 +15,7 @@ public:
 	std::string GetMealName() const { return _name; }
 	void DisplayIngredients();
 	void DeleteIngredient(unsigned int i);
+	std::vector<std::string> GetIngredients() { return _ingredients; }
 private:	
 	std::vector<std::string> _ingredients;
 	float _price;

@@ -33,22 +33,6 @@ QSSystem::QSSystem(std::string inventory) : wxFrame(nullptr, wxID_ANY, "QS", wxD
 	Centre();
 }
 
-void QSSystem::Run()
-{
-	switch (this->_state)
-	{
-	case SYS_STATE::DEFAULT:
-		DefaultState();
-		break;
-
-	case SYS_STATE::BUILDING_ORDER:
-		break;
-
-	default:
-		break;
-	}
-}
-
 void QSSystem::OnCreateOrder(wxCommandEvent& e)
 {
 	//this->_main->Hide();

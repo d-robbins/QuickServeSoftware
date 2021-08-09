@@ -13,7 +13,7 @@ public:
 	~Inventory() {}
 
 	void PrintItems();
-
+	std::map<Item, int> GetItems() { return _items; }
 private:
 	std::map<Item, int> _items;
 };

@@ -23,11 +23,10 @@ public:
 	QSSystem(std::string inventory);
 	~QSSystem() { }
 
-	void Run();
-
 	Order* GetQueuedOrder() { return _neworder; }
 
 	std::shared_ptr<std::vector<Meal>> GetMeals() const { return this->_meals; }
+	std::map<Item, int> GetInventoryItems() const { return this->_inventory->GetItems(); }
 	wxPanel* GetMain() { return _main; }
 private:
 	void OnCreateOrder(wxCommandEvent& e);

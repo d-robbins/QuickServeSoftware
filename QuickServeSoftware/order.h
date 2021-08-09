@@ -26,10 +26,12 @@ public:
 
 	wxSizer* QSGetSizer() { return this->GetSizer(); }
 
+	wxDECLARE_EVENT_TABLE();
+
 private:
 	void OnReturnMain(wxCommandEvent& e);
 	void OnAddItem(wxCommandEvent& e);
-	void UpdatePreview();
+	void OnListClick(wxCommandEvent& e);
 
 	wxButton* _return = nullptr;
 	wxListBox* _list = nullptr;
@@ -38,9 +40,15 @@ private:
 	wxPanel* _lhsbt = nullptr;
 	wxPanel* _lhstp = nullptr;
 	wxPanel* _rhs = nullptr;
+	wxPanel* _rhstp = nullptr;
 
 	wxButton**_buttons = nullptr;
 	std::vector<int> _button_ids;
+	wxBoxSizer* _rhssizer = nullptr;
+
+	wxListBox* _available_ingredients = nullptr;
+	wxListBox* _current_ingredients = nullptr;
+
 
 	wxDialog* _dlg = nullptr;
 
