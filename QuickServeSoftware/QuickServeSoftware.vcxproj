@@ -25,6 +25,7 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="meal.h" />
     <ClInclude Include="order.h" />
+    <ClInclude Include="qsconsts.h" />
     <ClInclude Include="qssystem.h" />
     <ClInclude Include="user.h" />
   </ItemGroup>

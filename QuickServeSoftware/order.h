@@ -8,10 +8,11 @@
 #include <string>
 #include <vector>
 
-const int ID_RETURN = 1003;
-const int ID_CAJUN = 1004;
-
 class QSSystem;
+
+/**
+ * Class to handle placing orders
+ */
 class Order : wxFrame
 {
 public:
@@ -32,15 +33,24 @@ private:
 	void OnReturnMain(wxCommandEvent& e);
 	void OnAddItem(wxCommandEvent& e);
 	void OnListClick(wxCommandEvent& e);
+	void OnSubmitEdit(wxCommandEvent& e);
+	void OnPreviewListClick(wxCommandEvent& e);
+	void OnSubmitSave(wxCommandEvent& e);
+
+	void EditItem(wxString, wxDialog*, Meal* m);
 
 	wxButton* _return = nullptr;
 	wxListBox* _list = nullptr;
+
+	// Create Order Menu
 
 	wxPanel* _lhs = nullptr;
 	wxPanel* _lhsbt = nullptr;
 	wxPanel* _lhstp = nullptr;
 	wxPanel* _rhs = nullptr;
 	wxPanel* _rhstp = nullptr;
+
+	// ---------------------------
 
 	wxButton**_buttons = nullptr;
 	std::vector<int> _button_ids;
@@ -49,16 +59,20 @@ private:
 	wxListBox* _available_ingredients = nullptr;
 	wxListBox* _current_ingredients = nullptr;
 
+	wxPanel* _edit_panel = nullptr;
 
 	wxDialog* _dlg = nullptr;
 
 	wxPanel* _main = nullptr;
+	wxString _edited_title = "";
+
 	std::string _orderid;
-	std::vector<Meal> _components;
-	int _loi = 0;
+
+	int _current_editing = -1;
 
 	QSSystem* _sys = nullptr;
 	User* _usr = nullptr;
+	std::vector<Meal> _meals;
 };
 
 

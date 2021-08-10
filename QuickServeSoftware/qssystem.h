@@ -14,7 +14,6 @@ const int ID_BEGINORDER = 1002;
 
 const int BW = 10;
 const int BH = 10;
-
 class QSSystem : public wxFrame
 {
 public:
@@ -28,6 +27,7 @@ public:
 	std::shared_ptr<std::vector<Meal>> GetMeals() const { return this->_meals; }
 	std::map<Item, int> GetInventoryItems() const { return this->_inventory->GetItems(); }
 	wxPanel* GetMain() { return _main; }
+	int GetNextSysMealID();
 private:
 	void OnCreateOrder(wxCommandEvent& e);
 	wxPanel* _main = nullptr;

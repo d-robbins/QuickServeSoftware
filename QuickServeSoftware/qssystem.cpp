@@ -7,6 +7,7 @@
 
 using namespace nlohmann;
 
+int QS_MEAL_SYS_ID = 0;
 
 QSSystem::QSSystem(std::string inventory) : wxFrame(nullptr, wxID_ANY, "QS", wxDefaultPosition, wxSize(1280, 720)) {
 
@@ -31,6 +32,12 @@ QSSystem::QSSystem(std::string inventory) : wxFrame(nullptr, wxID_ANY, "QS", wxD
 	Connect(ID_BEGINORDER, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(QSSystem::OnCreateOrder));
 
 	Centre();
+}
+
+int QSSystem::GetNextSysMealID()
+{
+	QS_MEAL_SYS_ID++;
+	return QS_MEAL_SYS_ID;
 }
 
 void QSSystem::OnCreateOrder(wxCommandEvent& e)

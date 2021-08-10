@@ -1,23 +1,24 @@
 #include "order.h"
 #include "qssystem.h"
+#include "qsconsts.h"
+
 
 #include <algorithm>
 #include <functional>
 #include <string>
 #include <cstdlib>
 
-const int CUR_INGREDIENTS = 12832;
-const int PAST_INGREDIENTS = 12839;
-
 wxBEGIN_EVENT_TABLE(Order, wxFrame)
 	
-EVT_LISTBOX_DCLICK(PAST_INGREDIENTS, Order::OnListClick)
-EVT_LISTBOX_DCLICK(CUR_INGREDIENTS, Order::OnListClick)
+EVT_LISTBOX_DCLICK(qsc::ID_EDIT_AVAIL_INGREDIENTS, Order::OnListClick)
+EVT_LISTBOX_DCLICK(qsc::ID_EDIT_CURRENT_INGREDIENTS, Order::OnListClick)
+EVT_LISTBOX_DCLICK(qsc::ID_EDIT_PREVIEW, Order::OnPreviewListClick)
 
 wxEND_EVENT_TABLE()
 
 Order::Order(QSSystem* sys, User* usr, wxFrame* parent) : _sys(sys), _usr(usr), wxFrame(nullptr, wxID_ANY, "Create Order", wxDefaultPosition, wxSize(1280, 720))
 {
+	// Create all the panels that we need for the order creation
 	_main = new wxPanel(this, wxID_ANY, wxDefaultPosition);
 	_lhs = new wxPanel(_main, wxID_ANY);
 	_rhs = new wxPanel(_main, wxID_ANY);
@@ -25,15 +26,16 @@ Order::Order(QSSystem* sys, User* usr, wxFrame* parent) : _sys(sys), _usr(usr), 
 	_lhstp = new wxPanel(_lhs, wxID_ANY);
 	_rhstp = new wxPanel(_rhs, wxID_ANY);
 
-	_return = new wxButton(_lhstp, ID_RETURN, "Return");
-	Connect(ID_RETURN, wxEVT_BUTTON, wxCommandEventHandler(Order::OnReturnMain));
+	_return = new wxButton(_lhstp, qsc::ID_RETURN, "Return");
+	Connect(qsc::ID_RETURN, wxEVT_BUTTON, wxCommandEventHandler(Order::OnReturnMain));
 	
-	_list = new wxListBox(_rhstp, wxID_ANY, wxDefaultPosition);
+	_list = new wxListBox(_rhstp, qsc::ID_EDIT_PREVIEW, wxDefaultPosition, wxSize(640, 320));
 
 	auto _buttons_size = sys->GetMeals()->size();
 	_buttons = new wxButton * [_buttons_size];
 	wxGridSizer* gsizer = new wxGridSizer(_buttons_size / 2, _buttons_size / 2, 0, 0);
 
+	// Intialize all the buttons needed for meals loaded in the system
 	for (int i = 0; i < _buttons_size; i++) {
 		_button_ids.push_back((i + 10000));
 		_buttons[i] = new wxButton(_lhsbt, (i + 10000), (*sys->GetMeals())[i].GetMealName());
@@ -43,6 +45,7 @@ Order::Order(QSSystem* sys, User* usr, wxFrame* parent) : _sys(sys), _usr(usr), 
 
 	wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer* sizerlhs = new wxBoxSizer(wxVERTICAL);
+	
 	_rhssizer = new wxBoxSizer(wxVERTICAL);
 
 	_lhsbt->SetSizer(gsizer);
@@ -85,6 +88,9 @@ void Order::OnReturnMain(wxCommandEvent& e)
 	e.Skip();
 }
 
+/*
+	When user attempts to add a meal to an order
+*/
 void Order::OnAddItem(wxCommandEvent& e)
 {
 	wxArrayString ops;
@@ -94,30 +100,135 @@ void Order::OnAddItem(wxCommandEvent& e)
 	dlg->ShowModal();
 	if (dlg->GetStringSelection() == "Add") {
 		this->_list->AppendString(((wxButton*)e.GetEventObject())->GetLabel());
+		auto label = ((wxButton*)e.GetEventObject())->GetLabel();
+		auto to_edit = std::find_if(_sys->GetMeals()->begin(), _sys->GetMeals()->end(), [label](const Meal& m) {
+			if (label == m.GetMealName()) {
+				return true;
+			}
+			else {
+				return false;
+			}
+			});
+		if (to_edit != _sys->GetMeals()->end()) {
+			Meal m = *to_edit;
+			m.SetMealSystemID(_sys->GetNextSysMealID());
+			_meals.push_back(m);
+		}
 	}
 	else if (dlg->GetStringSelection() == "Edit") {
-		auto* panel = new wxPanel(_rhs, -1, wxDefaultPosition);
-		panel->SetBackgroundColour(wxColour(154, 177, 178));
-		
-		_rhssizer->Add(panel, 1, wxEXPAND | wxALL);
-		_rhssizer->Layout();
+		EditItem(((wxButton*)e.GetEventObject())->GetLabel(), dlg, nullptr);
+	}
+	dlg->Destroy();
+}
 
-		auto* sizer = new wxBoxSizer(wxHORIZONTAL);
-		auto* lhspanel = new wxPanel(panel, wxID_ANY, wxDefaultPosition);
-		auto* rhspanel = new wxPanel(panel, wxID_ANY, wxDefaultPosition);
+void Order::OnSubmitEdit(wxCommandEvent& e) {
+	Meal meal;
+	for (const auto& i : _current_ingredients->GetStrings()) {
+		meal.AddIngredient(std::string(i.c_str()));
+	}
 
-		_available_ingredients = new wxListBox(lhspanel, PAST_INGREDIENTS, wxPoint(0, 20), wxSize(150, 300));
-		_current_ingredients = new wxListBox(rhspanel, CUR_INGREDIENTS, wxPoint(0, 20), wxSize(150, 300));
+	if (_edited_title != "") {
+		_list->AppendString(_edited_title + wxString(" Edited"));
+	}
+
+	meal.SetMealSystemID(_sys->GetNextSysMealID());
+	_meals.push_back(meal);
+
+	_edit_panel->Destroy();
+	_edit_panel = nullptr;
+}
+
+void Order::OnPreviewListClick(wxCommandEvent& e)
+{
+	int to_edit = ((wxListBox*)e.GetEventObject())->GetSelection();
+	if (to_edit < _meals.size()) {
+		// Relying on preview order for _meals vector order
+		// If we remove items from preview this will cause problems
+		// FIX
+		auto* m = &_meals[to_edit];
+		_current_editing = m->GetSysID();
+		EditItem(m->GetMealName(), nullptr, m);
+	}
+	else {
+		wxMessageBox("Couldn't find meal to edit!");
+	}
+}
+
+void Order::OnSubmitSave(wxCommandEvent& e)
+{
+	if (_current_editing != -1) {
+		auto t = _current_editing;
+		auto meal = std::find_if(_meals.begin(), _meals.end(), [t](const Meal& m) {
+			if (t == m.GetSysID()) {
+				return true;
+			}
+			else {
+				return false;
+			}	
+			});
 		
-		auto* lhstitle = new wxStaticText(lhspanel, wxID_ANY, "Available Ingredients", wxPoint(20, 0));
-		auto items = _sys->GetInventoryItems();
-		for (auto it = items.begin(); it != items.end(); ++it) {
-			_available_ingredients->AppendString(it->first.GetName());
+		if (meal != _meals.end()) {
+			(*meal).ClearIngredients();
+			for (const auto& i : _current_ingredients->GetStrings()) {
+				(*meal).AddIngredient(std::string(i.c_str()));
+			}
 		}
+	}
 
-		auto* rhstitle = new wxStaticText(rhspanel, wxID_ANY, "Current Ingredients", wxPoint(20, 0));
+	_current_editing = -1;
+	_edit_panel->Destroy();
+	_edit_panel = nullptr;
+}
 
-		auto label = ((wxButton*)e.GetEventObject())->GetLabel();
+void Order::EditItem(wxString itemName, wxDialog* dlg, Meal* m)
+{
+	// So we dont edit 2 orders at once... future feature maybe?
+	if (_edit_panel != nullptr) {
+		_edit_panel->Destroy();
+	}
+
+	_edit_panel = new wxPanel(_rhs, -1, wxDefaultPosition);
+	//_edit_panel->SetBackgroundColour(wxColour(154, 177, 178));
+
+	_rhssizer->Add(_edit_panel, 1, wxEXPAND | wxALL);
+	_rhssizer->Layout();
+
+	auto* sizer = new wxBoxSizer(wxHORIZONTAL);
+	auto* lhspanel = new wxPanel(_edit_panel, wxID_ANY, wxDefaultPosition);
+	auto* rhspanel = new wxPanel(_edit_panel, wxID_ANY, wxDefaultPosition);
+
+	_available_ingredients = new wxListBox(lhspanel, qsc::ID_EDIT_AVAIL_INGREDIENTS, wxPoint(0, 20), wxSize(150, 300));
+	_current_ingredients = new wxListBox(rhspanel, qsc::ID_EDIT_CURRENT_INGREDIENTS, wxPoint(0, 20), wxSize(150, 300));
+
+	auto* lhstitle = new wxStaticText(lhspanel, wxID_ANY, "Available Ingredients", wxPoint(20, 0));
+	auto items = _sys->GetInventoryItems();
+
+	// Get items from the systems inventory and add it to the available toppings for meals
+	for (auto it = items.begin(); it != items.end(); ++it) {
+		_available_ingredients->AppendString(it->first.GetName());
+	}
+
+	auto* rhstitle = new wxStaticText(rhspanel, wxID_ANY, "Current Ingredients", wxPoint(70, 0));
+
+	auto* rhsediting = new wxStaticText(lhspanel, wxID_ANY, "Editing:\n" + itemName, wxPoint(200, 0));
+	
+	auto* editsubmit = new wxButton(lhspanel, qsc::ID_SUBMIT_EDITED, "Submit", wxPoint(200, 50));
+
+	if (m == nullptr) {
+		Connect(qsc::ID_SUBMIT_EDITED, wxEVT_BUTTON, wxCommandEventHandler(Order::OnSubmitEdit));
+	}
+	else {
+		editsubmit->SetId(qsc::ID_SAVE_PREVIEW_EDIT);
+		editsubmit->SetLabel("Save Edits");
+		Connect(qsc::ID_SAVE_PREVIEW_EDIT, wxEVT_BUTTON, wxCommandEventHandler(Order::OnSubmitSave));
+	}
+
+	_edited_title = itemName;
+
+	auto label = itemName;
+
+	if (m == nullptr) {
+		// Find the actual meal that we want to edit (so we have the current ingredients)
 		auto to_edit = std::find_if(_sys->GetMeals()->begin(), _sys->GetMeals()->end(), [label](const Meal& m) {
 			if (label == m.GetMealName()) {
 				return true;
@@ -137,29 +248,51 @@ void Order::OnAddItem(wxCommandEvent& e)
 				_current_ingredients->AppendString(i);
 			}
 		}
-
-		sizer->Add(lhspanel, 1);
-		sizer->Add(rhspanel, 1);
-		
-		panel->SetSizer(sizer);
-		panel->Layout();
-
-		panel->Show();
 	}
-	dlg->Destroy();
+	else {
+		for (const auto& i : m->GetIngredients()) {
+			_current_ingredients->AppendString(i);
+		}
+	}
+
+	sizer->Add(lhspanel, 1);
+	sizer->Add(rhspanel, 1);
+
+	_edit_panel->SetSizer(sizer);
+	_edit_panel->Layout();
+
+	_edit_panel->Show();
 }
 
 void Order::OnListClick(wxCommandEvent& e)
 {
 	auto id = ((wxListBox*)e.GetEventObject())->GetId();
-	if (id == PAST_INGREDIENTS) {
+	if (id == qsc::ID_EDIT_AVAIL_INGREDIENTS) {
 		_current_ingredients->AppendString(((wxListBox*)e.GetEventObject())->GetStringSelection());
 	}
-	else if (id == CUR_INGREDIENTS) {
-		_available_ingredients->AppendString(((wxListBox*)e.GetEventObject())->GetStringSelection());
-	}
-	
+	else if (id == qsc::ID_EDIT_CURRENT_INGREDIENTS) {
+		
+		bool found = false;
+		for (const auto& i : _available_ingredients->GetStrings()) {
+			if (i == ((wxListBox*)e.GetEventObject())->GetStringSelection()) {
+				found = true;
+			}
+		}
 
+		if (!found) {
+			_available_ingredients->AppendString(((wxListBox*)e.GetEventObject())->GetStringSelection());
+		}
+
+		int loc = 0;
+		for (int i = 0; i < _current_ingredients->GetStrings().size(); i++) {
+			if ((_current_ingredients->GetStrings())[i]
+				== ((wxListBox*)e.GetEventObject())->GetStringSelection()) {
+				loc = i;
+			}
+		}
+		_current_ingredients->Delete(loc);
+		_current_ingredients->Refresh();
+	}
 
 	((wxListBox*)e.GetEventObject())->DeselectAll();
 }

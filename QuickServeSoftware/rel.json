@@ -123,17 +123,6 @@
         "onion",
         "pineapple"
       ]
-    },
-    {
-      "name": "BBQ Pizza",
-      "price": 12.99,
-      "type": "ENTRE",
-      "contains": [
-        "barbecue",
-        "chicken",
-        "onion",
-        "pineapple"
-      ]
     }
   ]
 }
