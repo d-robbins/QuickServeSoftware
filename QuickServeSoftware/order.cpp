@@ -12,7 +12,7 @@ wxBEGIN_EVENT_TABLE(Order, wxFrame)
 	
 EVT_LISTBOX_DCLICK(qsc::ID_EDIT_AVAIL_INGREDIENTS, Order::OnListClick)
 EVT_LISTBOX_DCLICK(qsc::ID_EDIT_CURRENT_INGREDIENTS, Order::OnListClick)
-EVT_LISTBOX_DCLICK(qsc::ID_EDIT_PREVIEW, Order::OnPreviewListClick)
+EVT_LISTBOX_DCLICK(qsc::ID_EDIT_PREVIEW, Order::OnPreviewListDblClick)
 
 wxEND_EVENT_TABLE()
 
@@ -75,10 +75,6 @@ Order::~Order()
 
 	delete[]_buttons;
 }
-void Order::CreateOrder()
-{
-	
-}
 
 void Order::OnReturnMain(wxCommandEvent& e)
 {
@@ -138,19 +134,29 @@ void Order::OnSubmitEdit(wxCommandEvent& e) {
 	_edit_panel = nullptr;
 }
 
-void Order::OnPreviewListClick(wxCommandEvent& e)
+void Order::OnPreviewListDblClick(wxCommandEvent& e)
 {
-	int to_edit = ((wxListBox*)e.GetEventObject())->GetSelection();
-	if (to_edit < _meals.size()) {
-		// Relying on preview order for _meals vector order
-		// If we remove items from preview this will cause problems
-		// FIX
-		auto* m = &_meals[to_edit];
-		_current_editing = m->GetSysID();
-		EditItem(m->GetMealName(), nullptr, m);
+	wxArrayString ops;
+	ops.Add("Edit");
+	ops.Add("Remove");
+	wxSingleChoiceDialog* dlg = new wxSingleChoiceDialog(NULL, "", "Options", ops);
+	dlg->ShowModal();
+	if (dlg->GetStringSelection() == "Edit") {
+		int to_edit = ((wxListBox*)e.GetEventObject())->GetSelection();
+		if (to_edit < _meals.size()) {
+			// Relying on preview order for _meals vector order
+			// If we remove items from preview this will cause problems
+			// FIX
+			auto* m = &_meals[to_edit];
+			_current_editing = m->GetSysID();
+			EditItem(m->GetMealName(), nullptr, m);
+		}
+		else {
+			wxMessageBox("Couldn't find meal to edit!");
+		}
 	}
-	else {
-		wxMessageBox("Couldn't find meal to edit!");
+	else if (dlg->GetStringSelection() == "Remove") {
+		wxMessageBox("Implement Me!");
 	}
 }
 
@@ -197,6 +203,7 @@ void Order::EditItem(wxString itemName, wxDialog* dlg, Meal* m)
 	auto* lhspanel = new wxPanel(_edit_panel, wxID_ANY, wxDefaultPosition);
 	auto* rhspanel = new wxPanel(_edit_panel, wxID_ANY, wxDefaultPosition);
 
+	// Available and current ingredients of edited items
 	_available_ingredients = new wxListBox(lhspanel, qsc::ID_EDIT_AVAIL_INGREDIENTS, wxPoint(0, 20), wxSize(150, 300));
 	_current_ingredients = new wxListBox(rhspanel, qsc::ID_EDIT_CURRENT_INGREDIENTS, wxPoint(0, 20), wxSize(150, 300));
 

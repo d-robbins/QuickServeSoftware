@@ -1,7 +1,6 @@
 #include "qssystem.h"
 #include "json.hpp"
 #include "user.h"
-
 #include <iostream>
 #include <fstream>
 
@@ -15,23 +14,29 @@ QSSystem::QSSystem(std::string inventory) : wxFrame(nullptr, wxID_ANY, "QS", wxD
 	this->_inventory = std::make_shared<Inventory>(inventory);
 	this->_meals = std::make_shared<std::vector<Meal>>();
 
+
 	ConfigureSystem();
-
-	User david("david", "1");
-
-	//Order o(this, &david);
-	//o.CreateOrder();
-
-	//Run();
 
 	// FRONTEND ----------------------------------------------------
 
 	_main = new wxPanel(this, wxID_ANY);
+	_leftp = new wxPanel(_main, wxID_ANY);
+	_rightp = new wxPanel(_main, wxID_ANY);
+	
 
-	_order = new wxButton(_main, ID_BEGINORDER, "Begin Order", wxPoint(50, 50), wxSize(150, 50));
+	wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
+	sizer->Add(_leftp, 1, wxEXPAND | wxALL);
+	sizer->Add(_rightp, 0, wxEXPAND | wxALL);
+	_table_manager = new QSTableManager(this, _leftp);
+
+	_main->SetSizer(sizer);
+	sizer->Layout();
+
+	_order = new wxButton(_rightp, ID_BEGINORDER, "Begin Order", wxPoint(0, 0), wxSize(150, 50));
 	Connect(ID_BEGINORDER, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(QSSystem::OnCreateOrder));
-
+	
 	Centre();
+	this->Show();
 }
 
 int QSSystem::GetNextSysMealID()
@@ -42,14 +47,9 @@ int QSSystem::GetNextSysMealID()
 
 void QSSystem::OnCreateOrder(wxCommandEvent& e)
 {
-	//this->_main->Hide();
 	User u("David", "1");
 
 	_neworder = new Order(this, &u, this);
-}
-
-void QSSystem::DefaultState()
-{
 	
 }
 
@@ -95,4 +95,3 @@ void QSSystem::ConfigureSystem()
 		}
 	}
 }
-

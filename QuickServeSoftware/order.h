@@ -34,7 +34,7 @@ private:
 	void OnAddItem(wxCommandEvent& e);
 	void OnListClick(wxCommandEvent& e);
 	void OnSubmitEdit(wxCommandEvent& e);
-	void OnPreviewListClick(wxCommandEvent& e);
+	void OnPreviewListDblClick(wxCommandEvent& e);
 	void OnSubmitSave(wxCommandEvent& e);
 
 	void EditItem(wxString, wxDialog*, Meal* m);

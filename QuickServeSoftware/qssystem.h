@@ -5,6 +5,7 @@
 #include "inventory.h"
 #include "order.h"
 #include "meal.h"
+#include "qstable_manager.h"
 
 #include <map>
 #include <memory>
@@ -14,6 +15,8 @@ const int ID_BEGINORDER = 1002;
 
 const int BW = 10;
 const int BH = 10;
+
+
 class QSSystem : public wxFrame
 {
 public:
@@ -31,14 +34,13 @@ public:
 private:
 	void OnCreateOrder(wxCommandEvent& e);
 	wxPanel* _main = nullptr;
+	wxPanel* _leftp = nullptr;
+	wxPanel* _rightp = nullptr;
 	Order* _neworder = nullptr;
 	wxButton* _order = nullptr;
-
-private:
-	void DefaultState();
-	
+	QSTableManager *_table_manager = nullptr;
+private:	
 	void ConfigureSystem();
-
 	void ViewInventory() { _inventory->PrintItems(); }
 
 	SYS_STATE _state = SYS_STATE::DEFAULT;

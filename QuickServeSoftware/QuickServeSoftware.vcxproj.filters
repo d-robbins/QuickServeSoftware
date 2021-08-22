@@ -42,6 +42,12 @@
     <ClInclude Include="qsconsts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="qstable_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qstable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp">
@@ -66,6 +72,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="user.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qstable_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qstable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

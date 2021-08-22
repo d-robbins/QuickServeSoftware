@@ -27,6 +27,8 @@
     <ClInclude Include="order.h" />
     <ClInclude Include="qsconsts.h" />
     <ClInclude Include="qssystem.h" />
+    <ClInclude Include="qstable.h" />
+    <ClInclude Include="qstable_manager.h" />
     <ClInclude Include="user.h" />
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +39,8 @@
     <ClCompile Include="meal.cpp" />
     <ClCompile Include="order.cpp" />
     <ClCompile Include="qssystem.cpp" />
+    <ClCompile Include="qstable.cpp" />
+    <ClCompile Include="qstable_manager.cpp" />
     <ClCompile Include="user.cpp" />
   </ItemGroup>
   <ItemGroup>
