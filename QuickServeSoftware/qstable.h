@@ -5,7 +5,7 @@
 class QSTable
 {
 public:
-	QSTable();
+	QSTable(int id) : _id(id) {}
 	~QSTable();
 
 	int GetID() const { return _id; }

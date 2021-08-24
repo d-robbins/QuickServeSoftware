@@ -9,13 +9,20 @@ class QSSystem;
 class QSTableManager : public wxPanel
 {
 public:
+	enum class STATE {NORMAL, EDIT};
+	
 	QSTableManager(QSSystem* sys, wxPanel* parent);
 	~QSTableManager() {}
 
-private:
-	std::vector<QSTable> _active_tables;
-	std::vector<wxButton*> _buttons;
+	void SetManagerState(STATE s) { _state = s; }
 
-	std::map<QSTable, wxButton*> _tables;
+private:
+	wxButton* GetButtonFromId(std::string id);
+	void OnClick(wxCommandEvent& e);
+	void MoveButton();
+	void OnTableClick(wxCommandEvent& e);
+	std::map< QSTable, wxButton*> _tables;
+	STATE _state = STATE::NORMAL;
+	std::string _editing_id = "";
 };
 

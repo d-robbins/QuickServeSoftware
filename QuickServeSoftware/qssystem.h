@@ -37,9 +37,12 @@ private:
 	wxPanel* _leftp = nullptr;
 	wxPanel* _rightp = nullptr;
 	Order* _neworder = nullptr;
+	wxMenuBar* _menu = nullptr;
+	wxMenu* _menu_edit_table = nullptr;
 	wxButton* _order = nullptr;
 	QSTableManager *_table_manager = nullptr;
 private:	
+	void OnToggleEditTables(wxCommandEvent& e);
 	void ConfigureSystem();
 	void ViewInventory() { _inventory->PrintItems(); }
 

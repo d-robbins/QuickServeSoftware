@@ -44,6 +44,7 @@ private:
 
 	// Create Order Menu
 
+	wxBoxSizer* _sizerrhstp = nullptr;
 	wxPanel* _lhs = nullptr;
 	wxPanel* _lhsbt = nullptr;
 	wxPanel* _lhstp = nullptr;

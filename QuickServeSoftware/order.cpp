@@ -29,6 +29,7 @@ Order::Order(QSSystem* sys, User* usr, wxFrame* parent) : _sys(sys), _usr(usr), 
 	_return = new wxButton(_lhstp, qsc::ID_RETURN, "Return");
 	Connect(qsc::ID_RETURN, wxEVT_BUTTON, wxCommandEventHandler(Order::OnReturnMain));
 	
+	_sizerrhstp = new wxBoxSizer(wxHORIZONTAL);
 	_list = new wxListBox(_rhstp, qsc::ID_EDIT_PREVIEW, wxDefaultPosition, wxSize(640, 320));
 
 	auto _buttons_size = sys->GetMeals()->size();
@@ -59,10 +60,15 @@ Order::Order(QSSystem* sys, User* usr, wxFrame* parent) : _sys(sys), _usr(usr), 
 	_rhssizer->Add(_rhstp, 1, wxEXPAND | wxALL);
 	_rhssizer->Layout();
 
+	_sizerrhstp->Add(_list, 1, wxEXPAND | wxALL, 10);
+	_rhstp->SetSizer(_sizerrhstp);
+
 	_rhs->SetSizer(_rhssizer);
 	_lhs->SetSizer(sizerlhs);
 	_main->SetSizer(sizer);
 
+	_sizerrhstp->Layout();
+	
 	this->Show();
 	Centre();
 }
@@ -128,6 +134,8 @@ void Order::OnSubmitEdit(wxCommandEvent& e) {
 	}
 
 	meal.SetMealSystemID(_sys->GetNextSysMealID());
+	
+	meal.SetMealName(std::string(_edited_title.c_str()));
 	_meals.push_back(meal);
 
 	_edit_panel->Destroy();
@@ -158,6 +166,7 @@ void Order::OnPreviewListDblClick(wxCommandEvent& e)
 	else if (dlg->GetStringSelection() == "Remove") {
 		wxMessageBox("Implement Me!");
 	}
+	
 }
 
 void Order::OnSubmitSave(wxCommandEvent& e)
@@ -216,6 +225,8 @@ void Order::EditItem(wxString itemName, wxDialog* dlg, Meal* m)
 	}
 
 	auto* rhstitle = new wxStaticText(rhspanel, wxID_ANY, "Current Ingredients", wxPoint(70, 0));
+
+	auto f = itemName;
 
 	auto* rhsediting = new wxStaticText(lhspanel, wxID_ANY, "Editing:\n" + itemName, wxPoint(200, 0));
 	

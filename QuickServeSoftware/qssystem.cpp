@@ -1,6 +1,7 @@
 #include "qssystem.h"
 #include "json.hpp"
 #include "user.h"
+#include "qsconsts.h"
 #include <iostream>
 #include <fstream>
 
@@ -13,7 +14,7 @@ QSSystem::QSSystem(std::string inventory) : wxFrame(nullptr, wxID_ANY, "QS", wxD
 	// BACKEND ----------------------------------------------------
 	this->_inventory = std::make_shared<Inventory>(inventory);
 	this->_meals = std::make_shared<std::vector<Meal>>();
-
+	_menu = new wxMenuBar();
 
 	ConfigureSystem();
 
@@ -23,11 +24,11 @@ QSSystem::QSSystem(std::string inventory) : wxFrame(nullptr, wxID_ANY, "QS", wxD
 	_leftp = new wxPanel(_main, wxID_ANY);
 	_rightp = new wxPanel(_main, wxID_ANY);
 	
-
 	wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
-	sizer->Add(_leftp, 1, wxEXPAND | wxALL);
-	sizer->Add(_rightp, 0, wxEXPAND | wxALL);
-	_table_manager = new QSTableManager(this, _leftp);
+
+	_table_manager = new QSTableManager(this, _main);
+	sizer->Add(_table_manager, 1, wxEXPAND | wxALL, 10);
+	sizer->Add(_rightp, 0, wxEXPAND | wxALL, 10);
 
 	_main->SetSizer(sizer);
 	sizer->Layout();
@@ -35,8 +36,21 @@ QSSystem::QSSystem(std::string inventory) : wxFrame(nullptr, wxID_ANY, "QS", wxD
 	_order = new wxButton(_rightp, ID_BEGINORDER, "Begin Order", wxPoint(0, 0), wxSize(150, 50));
 	Connect(ID_BEGINORDER, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(QSSystem::OnCreateOrder));
 	
+	_menu_edit_table = new wxMenu;
+	_menu_edit_table->Append(qsc::ID_FILE_EDIT_TABLE, wxT("Configure Table Layout"));
+	Connect(qsc::ID_FILE_EDIT_TABLE, wxEVT_COMMAND_MENU_SELECTED,
+		wxCommandEventHandler(QSSystem::OnToggleEditTables));
+	_menu->Append(_menu_edit_table, wxT("File"));
+
+	SetMenuBar(_menu);
 	Centre();
 	this->Show();
+}
+
+void QSSystem::OnToggleEditTables(wxCommandEvent& WXUNUSED(event))
+{
+	this->_table_manager->SetManagerState(QSTableManager::STATE::EDIT);
+	//wxMessageBox("Click table to move then click location to move to");
 }
 
 int QSSystem::GetNextSysMealID()

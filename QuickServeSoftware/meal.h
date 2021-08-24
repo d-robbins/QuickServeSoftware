@@ -18,6 +18,7 @@ public:
 	void AddIngredient(std::string item) { _ingredients.push_back(item); }
 	void DisplayIngredients();
 	void DeleteIngredient(unsigned int i);
+	void SetMealName(const std::string& name) { _name = name; }
 
 	void SetMealSystemID(int i) { _systemID = i; }
 	int GetSysID() const { return _systemID; }
@@ -27,6 +28,7 @@ public:
 
 private:	
 	std::vector<std::string> _ingredients;
+	std::vector<std::pair<std::string, std::string>> _ops;
 	float _price;
 	std::string _name;
 	int _systemID;
