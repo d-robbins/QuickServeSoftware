@@ -1,11 +1,15 @@
 #include "qstable_manager.h"
 #include "qssystem.h"
 #include "qsconsts.h"
+#include "qssystem.h"
+#include "qsorderdiag.h"
+
 QSTableManager::QSTableManager(QSSystem* sys, wxPanel* parent) : wxPanel(parent, qsc::ID_TABLE_MANAGER, wxDefaultPosition)
 {
+	_sys = sys;
 	// TODO: Get the table layout from the system
 	for (int i = 0; i < 10; i++) {
-		this->_tables.insert(std::pair<QSTable, wxButton*>
+		this->_tables.push_back(std::pair<QSTable, wxButton*>
 			(QSTable(i), new wxButton(this, 12008 + i, std::to_string(i), wxPoint(0, i * 50), wxSize(50, 50))));
 		Connect(12008 + i, wxEVT_BUTTON, wxCommandEventHandler(QSTableManager::OnTableClick));
 	}
@@ -20,8 +24,32 @@ void QSTableManager::OnTableClick(wxCommandEvent& e)
 {
 	_editing_id = ((wxButton*)e.GetEventObject())->GetLabel();
 
-	if (_state == STATE::EDIT) {
+	switch (_state) {
+	case STATE::EDIT:
 		MoveButton();
+		break;
+	case STATE::NORMAL:
+	default:
+		// Create an Order
+		auto* diag = new QSOrderDiag("Create Order");
+		diag->SetSystem(_sys);
+		diag->ShowModal();
+		diag->Destroy();
+		
+		auto user = _sys->GetCurrentUser();
+
+		auto label = ((wxButton*)e.GetEventObject())->GetLabel();
+		for (auto &i : _tables) {
+			if (std::to_string(i.first.GetID() )== label) {
+				/*for (auto& meal : diag->GetOrderMeals()) {
+					i.first.AddMeal(meal);
+				}*/
+
+				break;
+			}
+		}
+			
+		break;
 	}
 }
 
@@ -31,6 +59,7 @@ wxButton* QSTableManager::GetButtonFromId(std::string id)
 	for (auto i = _tables.begin(); i != _tables.end(); ++i) {
 		if (std::to_string(i->first.GetID()) == _editing_id) {
 			found_button = i->second;
+			break;
 		}
 	}
 

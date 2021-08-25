@@ -32,9 +32,6 @@ QSSystem::QSSystem(std::string inventory) : wxFrame(nullptr, wxID_ANY, "QS", wxD
 
 	_main->SetSizer(sizer);
 	sizer->Layout();
-
-	_order = new wxButton(_rightp, ID_BEGINORDER, "Begin Order", wxPoint(0, 0), wxSize(150, 50));
-	Connect(ID_BEGINORDER, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(QSSystem::OnCreateOrder));
 	
 	_menu_edit_table = new wxMenu;
 	_menu_edit_table->Append(qsc::ID_FILE_EDIT_TABLE, wxT("Configure Table Layout"));
@@ -57,14 +54,6 @@ int QSSystem::GetNextSysMealID()
 {
 	QS_MEAL_SYS_ID++;
 	return QS_MEAL_SYS_ID;
-}
-
-void QSSystem::OnCreateOrder(wxCommandEvent& e)
-{
-	User u("David", "1");
-
-	_neworder = new Order(this, &u, this);
-	
 }
 
 void QSSystem::ConfigureSystem()

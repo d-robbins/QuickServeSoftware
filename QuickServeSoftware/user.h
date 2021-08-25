@@ -2,11 +2,11 @@
 
 #include <string>
 
-class User
+class QSUser
 {
 public:
-	User(std::string name, std::string id) : _name(name), _id(id) {}
-	~User() {}
+	QSUser(std::string name, std::string id) : _name(name), _id(id) {}
+	~QSUser() {}
 
 
 private:

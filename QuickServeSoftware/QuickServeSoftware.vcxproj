@@ -24,8 +24,8 @@
     <ClInclude Include="item.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="meal.h" />
-    <ClInclude Include="order.h" />
     <ClInclude Include="qsconsts.h" />
+    <ClInclude Include="qsorderdiag.h" />
     <ClInclude Include="qssystem.h" />
     <ClInclude Include="qstable.h" />
     <ClInclude Include="qstable_manager.h" />
@@ -37,7 +37,7 @@
     <ClCompile Include="item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="meal.cpp" />
-    <ClCompile Include="order.cpp" />
+    <ClCompile Include="qsorderdiag.cpp" />
     <ClCompile Include="qssystem.cpp" />
     <ClCompile Include="qstable.cpp" />
     <ClCompile Include="qstable_manager.cpp" />

@@ -3,9 +3,9 @@
 #include <wx/wx.h>
 
 #include "inventory.h"
-#include "order.h"
 #include "meal.h"
 #include "qstable_manager.h"
+#include "user.h"
 
 #include <map>
 #include <memory>
@@ -16,7 +16,6 @@ const int ID_BEGINORDER = 1002;
 const int BW = 10;
 const int BH = 10;
 
-
 class QSSystem : public wxFrame
 {
 public:
@@ -25,18 +24,18 @@ public:
 	QSSystem(std::string inventory);
 	~QSSystem() { }
 
-	Order* GetQueuedOrder() { return _neworder; }
-
 	std::shared_ptr<std::vector<Meal>> GetMeals() const { return this->_meals; }
 	std::map<Item, int> GetInventoryItems() const { return this->_inventory->GetItems(); }
 	wxPanel* GetMain() { return _main; }
+
+	QSUser GetCurrentUser() { return QSUser("David", "1"); }
+
 	int GetNextSysMealID();
 private:
-	void OnCreateOrder(wxCommandEvent& e);
 	wxPanel* _main = nullptr;
 	wxPanel* _leftp = nullptr;
 	wxPanel* _rightp = nullptr;
-	Order* _neworder = nullptr;
+
 	wxMenuBar* _menu = nullptr;
 	wxMenu* _menu_edit_table = nullptr;
 	wxButton* _order = nullptr;
@@ -49,5 +48,4 @@ private:
 	SYS_STATE _state = SYS_STATE::DEFAULT;
 	std::shared_ptr<std::vector<Meal>> _meals;
 	std::shared_ptr<Inventory> _inventory;
-	std::vector<Order> _orders;
 };

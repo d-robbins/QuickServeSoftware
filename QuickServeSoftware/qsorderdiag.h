@@ -1,45 +1,31 @@
 #pragma once
-
-#include "user.h"
-#include "meal.h"
-
 #include <wx/wx.h>
-
 #include <string>
-#include <vector>
-
-class QSSystem;
-
-/**
- * Class to handle placing orders
- */
-class Order : wxFrame
+#include "qssystem.h"
+#include "meal.h"
+class QSOrderDiag : public wxDialog
 {
 public:
-	enum class TYPE {DEFUALT, PRIORITY, ENTRE, APPETIZER};
-
-	Order(QSSystem* sys, User* usr, wxFrame* parent);
-	~Order();
-
-	void CreateOrder();
-
-	wxButton** GetButtons() { return _buttons; }
-
-	wxSizer* QSGetSizer() { return this->GetSizer(); }
-
-	wxDECLARE_EVENT_TABLE();
+	QSOrderDiag(const wxString& title);
+	~QSOrderDiag();
+	
+	std::string GetName() { return _name; }
+	void SetSystem(QSSystem* s);
+	//std::vector<Meal> GetOrderMeals() { return _meals; }
 
 private:
-	void OnReturnMain(wxCommandEvent& e);
+	void OnSubmitOrder(wxCommandEvent& e);
 	void OnAddItem(wxCommandEvent& e);
 	void OnListClick(wxCommandEvent& e);
 	void OnSubmitEdit(wxCommandEvent& e);
 	void OnPreviewListDblClick(wxCommandEvent& e);
 	void OnSubmitSave(wxCommandEvent& e);
 
+	wxDECLARE_EVENT_TABLE();
+
 	void EditItem(wxString, wxDialog*, Meal* m);
 
-	wxButton* _return = nullptr;
+	wxButton* _submit_order = nullptr;
 	wxListBox* _list = nullptr;
 
 	// Create Order Menu
@@ -53,7 +39,7 @@ private:
 
 	// ---------------------------
 
-	wxButton**_buttons = nullptr;
+	wxButton** _buttons = nullptr;
 	std::vector<int> _button_ids;
 	wxBoxSizer* _rhssizer = nullptr;
 
@@ -61,7 +47,7 @@ private:
 	wxListBox* _current_ingredients = nullptr;
 
 	wxPanel* _edit_panel = nullptr;
-
+	//std::vector<Meal> _meals;
 	wxDialog* _dlg = nullptr;
 
 	wxPanel* _main = nullptr;
@@ -71,10 +57,10 @@ private:
 
 	int _current_editing = -1;
 
+	// The default ingredients this meal gets
+	std::vector<std::pair<Meal, std::vector<std::string>>> _meals_default_pair;
+private:
 	QSSystem* _sys = nullptr;
-	User* _usr = nullptr;
-	std::vector<Meal> _meals;
+	std::string _name = "david";
 };
-
-
 

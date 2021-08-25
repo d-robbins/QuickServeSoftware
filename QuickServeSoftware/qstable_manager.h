@@ -21,7 +21,9 @@ private:
 	void OnClick(wxCommandEvent& e);
 	void MoveButton();
 	void OnTableClick(wxCommandEvent& e);
-	std::map< QSTable, wxButton*> _tables;
+
+	QSSystem* _sys = nullptr;
+	std::vector<std::pair< QSTable, wxButton*>> _tables;
 	STATE _state = STATE::NORMAL;
 	std::string _editing_id = "";
 };
