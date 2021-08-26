@@ -20,6 +20,10 @@ QSTableManager::QSTableManager(QSSystem* sys, wxPanel* parent) : wxPanel(parent,
 	this->Show();
 }
 
+QSTableManager::~QSTableManager()
+{
+}
+
 void QSTableManager::OnTableClick(wxCommandEvent& e)
 {
 	_editing_id = ((wxButton*)e.GetEventObject())->GetLabel();
@@ -33,6 +37,7 @@ void QSTableManager::OnTableClick(wxCommandEvent& e)
 		// Create an Order
 		auto* diag = new QSOrderDiag("Create Order");
 		diag->SetSystem(_sys);
+		diag->Centre();
 		diag->ShowModal();
 		diag->Destroy();
 		
@@ -48,7 +53,6 @@ void QSTableManager::OnTableClick(wxCommandEvent& e)
 				break;
 			}
 		}
-			
 		break;
 	}
 }
@@ -68,7 +72,6 @@ wxButton* QSTableManager::GetButtonFromId(std::string id)
 
 void QSTableManager::OnClick(wxCommandEvent& e)
 {
-	
 	MoveButton();
 }
 

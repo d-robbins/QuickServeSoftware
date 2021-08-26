@@ -30,7 +30,6 @@ public:
 
 	QSUser GetCurrentUser() { return QSUser("David", "1"); }
 
-	int GetNextSysMealID();
 private:
 	wxPanel* _main = nullptr;
 	wxPanel* _leftp = nullptr;

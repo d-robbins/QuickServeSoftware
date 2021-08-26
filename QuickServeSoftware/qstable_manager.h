@@ -12,7 +12,7 @@ public:
 	enum class STATE {NORMAL, EDIT};
 	
 	QSTableManager(QSSystem* sys, wxPanel* parent);
-	~QSTableManager() {}
+	~QSTableManager();
 
 	void SetManagerState(STATE s) { _state = s; }
 

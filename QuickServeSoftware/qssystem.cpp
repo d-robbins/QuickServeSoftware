@@ -50,12 +50,6 @@ void QSSystem::OnToggleEditTables(wxCommandEvent& WXUNUSED(event))
 	//wxMessageBox("Click table to move then click location to move to");
 }
 
-int QSSystem::GetNextSysMealID()
-{
-	QS_MEAL_SYS_ID++;
-	return QS_MEAL_SYS_ID;
-}
-
 void QSSystem::ConfigureSystem()
 {
 	std::ifstream in("rel.json");

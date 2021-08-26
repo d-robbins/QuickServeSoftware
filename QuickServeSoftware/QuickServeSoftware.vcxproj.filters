@@ -48,6 +48,15 @@
     <ClInclude Include="qsorderdiag.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="qsorderpreview.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qsitemdiag.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qsitemeditdiag.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp">
@@ -78,6 +87,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="qsorderdiag.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qsorderpreview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qsitemdiag.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qsitemeditdiag.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
