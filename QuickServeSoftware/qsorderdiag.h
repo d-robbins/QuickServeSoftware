@@ -17,9 +17,12 @@ public:
 
 	wxListBox* GetPreview() { return _preview; }
 
+	std::vector<std::shared_ptr<std::pair<Meal, std::vector<std::string>>>> GetMeals() { return _meals_default_pair; }
+
 private:
 	void OnAddItem(wxCommandEvent& e);
 	void OnPreviewDbl(wxCommandEvent& e);
+	void OnSubmitOrder(wxCommandEvent& e);
 
 	wxDECLARE_EVENT_TABLE();
 

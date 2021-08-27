@@ -6,6 +6,8 @@
 #include <iostream>
 #include <string>
 
+#include <wx/wx.h>
+
 class Meal
 {
 public:
@@ -25,6 +27,10 @@ public:
 
 	std::vector<std::string> GetIngredients() { return _ingredients; }
 	void ClearIngredients() { _ingredients.clear(); }
+
+	void AddOperation(std::pair<std::string, std::string> ops) { _ops.push_back(ops); }
+
+	std::vector<std::pair<std::string, std::string>> GetOps() { return _ops; }
 
 private:	
 	std::vector<std::string> _ingredients;

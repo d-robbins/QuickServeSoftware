@@ -12,12 +12,14 @@ void QSItemDiag::IntializeDiag(TYPE type)
 	_edit = false;
 	_remove = false;
 	_add_mod = false;
+	_type = type;
 
 	auto* mainPanel = new wxPanel(this, wxID_ANY);
 	auto* sizer = new wxBoxSizer(wxVERTICAL);
 
 	wxButton* remove = nullptr;
 	wxButton* add = nullptr;
+
 	switch (_type) {
 		case TYPE::ADDED:
 			remove = new wxButton(mainPanel, qsc::ID_ITEM_OP_DIAG, "Remove");

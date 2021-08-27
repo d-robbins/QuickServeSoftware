@@ -45,11 +45,10 @@ void QSTableManager::OnTableClick(wxCommandEvent& e)
 
 		auto label = ((wxButton*)e.GetEventObject())->GetLabel();
 		for (auto &i : _tables) {
-			if (std::to_string(i.first.GetID() )== label) {
-				/*for (auto& meal : diag->GetOrderMeals()) {
-					i.first.AddMeal(meal);
-				}*/
-
+			if (std::to_string(i.first.GetID()) == label) {
+				for (auto& p : diag->GetMeals()) {
+					i.first.AddMeal(p->first);
+				}
 				break;
 			}
 		}

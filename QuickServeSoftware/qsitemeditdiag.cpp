@@ -15,7 +15,7 @@ QSItemEditDiag::QSItemEditDiag(const wxString& title) : wxDialog(NULL, wxID_ANY,
 
 }
 
-void QSItemEditDiag::IntializeEditor(std::shared_ptr<std::pair<Meal, std::vector<std::string>>> item, QSSystem* sys)
+void QSItemEditDiag::IntializeEditor(std::pair<Meal, std::vector<std::string>>* item, QSSystem* sys)
 {
 	_sys = sys;
 	_editing = item;
@@ -31,7 +31,15 @@ void QSItemEditDiag::IntializeEditor(std::shared_ptr<std::pair<Meal, std::vector
 	// listboxes for edit dialog
 	_options = new wxListBox(_main, qsc::ID_OPTIONS_LIST);
 	_current_meal = new wxListBox(_main, qsc::ID_CURRENT_LIST);
-	
+
+	auto op_font = _options->GetFont();
+	op_font.SetPointSize(12);
+	_options->SetFont(op_font);
+
+	auto cur_font = _current_meal->GetFont();
+	cur_font.SetPointSize(12);
+	_current_meal->SetFont(cur_font);
+
 	// buttons for edit dialog
 	wxButton* submit = new wxButton(middle_panel, qsc::ID_SUBMIT_EDITED, "Submit");
 	Connect(qsc::ID_SUBMIT_EDITED, wxEVT_BUTTON, wxCommandEventHandler(QSItemEditDiag::OnSubmitClick));
@@ -63,8 +71,8 @@ void QSItemEditDiag::IntializeEditor(std::shared_ptr<std::pair<Meal, std::vector
 void QSItemEditDiag::OnListOptionsClick(wxCommandEvent& e)
 {
 	wxString option_selected = ((wxListBox*)e.GetEventObject())->GetStringSelection();
-
 	_current_meal->AppendString(option_selected);
+	_editing->first.AddOperation(std::pair<std::string, std::string>("Add", option_selected));
 }
 
 /**
@@ -75,6 +83,7 @@ void QSItemEditDiag::OnListCurrentClick(wxCommandEvent& e)
 	wxString ingredient_selected = ((wxListBox*)e.GetEventObject())->GetStringSelection();
 	int index = ((wxListBox*)e.GetEventObject())->GetSelection();
 	((wxListBox*)e.GetEventObject())->Delete(index);
+	_editing->first.AddOperation(std::pair<std::string, std::string>("Remove", ingredient_selected));
 }
 
 void QSItemEditDiag::OnSubmitClick(wxCommandEvent& e)

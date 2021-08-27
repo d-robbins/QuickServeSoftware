@@ -10,7 +10,7 @@ public:
 	QSItemEditDiag(const wxString& title);
 	~QSItemEditDiag() {}
 
-	void IntializeEditor(std::shared_ptr<std::pair<Meal, std::vector<std::string>>> item, QSSystem* sys);
+	void IntializeEditor(std::pair<Meal, std::vector<std::string>>* item, QSSystem* sys);
 
 	bool IsSuccess() { return _success; }
 
@@ -31,7 +31,7 @@ private:
 
 	QSSystem* _sys = nullptr;
 
-	std::shared_ptr<std::pair<Meal, std::vector<std::string>>> _editing;
+	std::pair<Meal, std::vector<std::string>>* _editing = nullptr;
 
 	// Main panel for dialog
 	wxPanel* _main = nullptr;

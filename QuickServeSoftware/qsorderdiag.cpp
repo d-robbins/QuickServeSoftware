@@ -42,6 +42,7 @@ void QSOrderDiag::OnAddItem(wxCommandEvent& e)
 
 	// create the ItemOps dialog
 	QSItemDiag* options = new QSItemDiag("Options");
+	options->Centre();
 	options->IntializeDiag(QSItemDiag::TYPE::UNADDED);
 
 	if (options->ToAdd()) {
@@ -50,15 +51,20 @@ void QSOrderDiag::OnAddItem(wxCommandEvent& e)
 	}
 	else if (options->ToEdit()) {
 		// Meal is to be edited
-		std::shared_ptr<OrderData> meal_editing = _meals_default_pair.back();
+		OrderData *meal_editing = _meals_default_pair.back().get();
 
 		QSItemEditDiag* editor = new QSItemEditDiag("Edit Meal");
+	
 		editor->IntializeEditor(meal_editing, _sys);
 		editor->Centre();
 		editor->ShowModal();
 		
 		if (editor->IsSuccess()) {
 			_preview->Append(_meals_default_pair.back()->first.GetMealName(), (void*)_meals_default_pair.back().get());
+			for (auto i : _meals_default_pair.back()->first.GetOps()) {
+				wxString str = "\t" + i.first + " " + i.second;
+				_preview->AppendString(str);
+			}
 		}
 		else {
 			_meals_default_pair.pop_back();
@@ -83,8 +89,68 @@ void QSOrderDiag::OnPreviewDbl(wxCommandEvent& e)
 	// get the index of the ListBox selection
 	int index = ((wxListBox*)e.GetEventObject())->GetSelection();
 	
-	// get the OrderData pair from the list
-	auto *m = (OrderData*)_preview->GetClientData(index);
+	if (_preview->GetClientData(index) != NULL || nullptr) {
+
+		// get the OrderData pair from the list
+		auto m = (OrderData*)_preview->GetClientData(index);
+
+		QSItemDiag* options = new QSItemDiag("Options");
+		options->Centre();
+		options->IntializeDiag(QSItemDiag::TYPE::ADDED);
+
+		if (options->ToRemove()) {
+			int remove = 0;
+			for (int i = 0; i < _meals_default_pair.size(); i++) {
+				if (&(*_meals_default_pair[i].get()) == m) {
+					remove = i;
+					break;
+				}
+			}
+		
+			// clear the preview list box
+			_preview->Clear();
+
+			// erase the removed meal from the meal list
+			_meals_default_pair.erase(_meals_default_pair.begin() + remove);
+		
+			// re-add all the other meals and their ops
+			for (auto& i : _meals_default_pair) {
+				_preview->Append(i->first.GetMealName(), (void*)(i.get()));
+				for (auto j : i->first.GetOps()) {
+					wxString str = "\t" + j.first + " " + j.second;
+					_preview->AppendString(str);
+				}
+			}
+
+		}
+		else if (options->ToEdit()) {
+			// Meal is to be edited
+			OrderData *meal_editing = m;
+			int current_op_index = meal_editing->first.GetOps().size();
+
+			QSItemEditDiag* editor = new QSItemEditDiag("Edit Meal");
+			editor->IntializeEditor(meal_editing, _sys);
+			editor->Centre();
+			editor->ShowModal();
+		
+			if (editor->IsSuccess()) {
+				for (int i = current_op_index; i < _meals_default_pair.back()->first.GetOps().size(); i++) {
+					wxString str = "\t" + _meals_default_pair.back()->first.GetOps()[i].first + " " + _meals_default_pair.back()->first.GetOps()[i].second;
+					_preview->AppendString(str);
+				}
+			}
+
+			editor->Destroy();
+		}
+		else if (options->ToAddMod()) {
+		
+		}
+	}
+}
+
+void QSOrderDiag::OnSubmitOrder(wxCommandEvent& e)
+{
+	this->Close();
 }
 
 QSOrderDiag::~QSOrderDiag()
@@ -110,13 +176,16 @@ void QSOrderDiag::SetSystem(QSSystem* s)
 	auto* lefttopsizer = new wxBoxSizer(wxHORIZONTAL);
 	_submit_order = new wxButton(_lhstp, qsc::ID_SUBMIT_ORDER, "Submit Order", wxDefaultPosition);
 	
-	//Connect(qsc::ID_SUBMIT_ORDER, wxEVT_BUTTON, wxCommandEventHandler(QSOrderDiag::OnSubmitOrder));
+	Connect(qsc::ID_SUBMIT_ORDER, wxEVT_BUTTON, wxCommandEventHandler(QSOrderDiag::OnSubmitOrder));
 	
 	lefttopsizer->Add(_submit_order, 1, wxEXPAND | wxALL | wxRIGHT, 5);
 	_lhstp->SetSizer(lefttopsizer);
 	
 	_sizerrhstp = new wxBoxSizer(wxHORIZONTAL);
 	_preview = new wxListBox(_rhstp, qsc::ID_PREVIEW, wxDefaultPosition);
+	auto my_font = _preview->GetFont();
+	my_font.SetPointSize(12);
+	_preview->SetFont(my_font);
 
 	auto _buttons_size = _sys->GetMeals()->size();
 	_buttons = new wxButton * [_buttons_size];

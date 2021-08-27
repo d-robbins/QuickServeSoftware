@@ -8,13 +8,13 @@ Meal::Meal(const std::vector<std::string>& items, const float& price, const std:
 
 void Meal::PrintMeal()
 {
-	std::cout << _name << std::endl;
-	std::cout << _price << std::endl;
+	std::string meal = _name + "\n" + std::to_string(_price) + "\n";
 
 	for (const auto& i : _ingredients) {
-		std::cout << i << " ";
+		meal += i + "\n";
 	}
-	std::cout << std::endl;
+
+	wxMessageBox(meal);
 }
 
 void Meal::DisplayIngredients()
