@@ -1,5 +1,5 @@
 #include "qsitemeditdiag.h"
-#include "qsconsts.h"
+#include "../qsconsts.h"
 
 
 wxBEGIN_EVENT_TABLE(QSItemEditDiag, wxDialog)
@@ -51,7 +51,7 @@ void QSItemEditDiag::IntializeEditor(std::pair<Meal, std::vector<std::string>>* 
 		_current_meal->AppendString(i);
 	}
 
-	for (auto i : _sys->GetInventoryItems()) {
+	for (auto i : _sys->GetStock()) {
 		_options->AppendString(i.first.GetName());
 	}
 

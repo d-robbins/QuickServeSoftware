@@ -11,8 +11,8 @@ namespace qsc {
 	const int ID_FILE_EDIT_TABLE			= 13001;
 	const int ID_PREVIEW					= 13002;
 	const int ID_ITEM_OP_DIAG				= 13003;
-	const int ID_EDIT_CANCEL = 13004;
-
+	const int ID_EDIT_CANCEL				= 13004;
+	const int ID_TABLE_CLICK				= 13005;
 
 
 	const int DIAG_W						= 1280;

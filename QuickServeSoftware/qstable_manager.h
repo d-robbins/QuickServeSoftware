@@ -17,14 +17,16 @@ public:
 	void SetManagerState(STATE s) { _state = s; }
 
 private:
-	wxButton* GetButtonFromId(std::string id);
 	void OnClick(wxCommandEvent& e);
 	void MoveButton();
 	void OnTableClick(wxCommandEvent& e);
 
 	QSSystem* _sys = nullptr;
-	std::vector<std::pair< QSTable, wxButton*>> _tables;
+	std::vector<wxButton*> _table_buttons;
+	std::vector<QSTable*> _tables;
+
+	wxButton* _editing = nullptr;
+
 	STATE _state = STATE::NORMAL;
-	std::string _editing_id = "";
 };
 

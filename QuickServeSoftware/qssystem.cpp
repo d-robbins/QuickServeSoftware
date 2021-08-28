@@ -12,7 +12,7 @@ int QS_MEAL_SYS_ID = 0;
 QSSystem::QSSystem(std::string inventory) : wxFrame(nullptr, wxID_ANY, "QS", wxDefaultPosition, wxSize(1280, 720)) {
 
 	// BACKEND ----------------------------------------------------
-	this->_inventory = std::make_shared<Inventory>(inventory);
+	this->_stock = std::make_shared<Inventory>(inventory);
 	this->_meals = std::make_shared<std::vector<Meal>>();
 	_menu = new wxMenuBar();
 
@@ -28,7 +28,7 @@ QSSystem::QSSystem(std::string inventory) : wxFrame(nullptr, wxID_ANY, "QS", wxD
 
 	_table_manager = new QSTableManager(this, _main);
 	sizer->Add(_table_manager, 1, wxEXPAND | wxALL, 10);
-	sizer->Add(_rightp, 0, wxEXPAND | wxALL, 10);
+//	sizer->Add(_rightp, 0, wxEXPAND | wxALL, 10);
 
 	_main->SetSizer(sizer);
 	sizer->Layout();
@@ -44,10 +44,15 @@ QSSystem::QSSystem(std::string inventory) : wxFrame(nullptr, wxID_ANY, "QS", wxD
 	this->Show();
 }
 
+void QSSystem::AddOrder(std::shared_ptr<QSSystemOrder> order)
+{
+	
+	this->_orders.push_back(order);
+}
+
 void QSSystem::OnToggleEditTables(wxCommandEvent& WXUNUSED(event))
 {
 	this->_table_manager->SetManagerState(QSTableManager::STATE::EDIT);
-	//wxMessageBox("Click table to move then click location to move to");
 }
 
 void QSSystem::ConfigureSystem()

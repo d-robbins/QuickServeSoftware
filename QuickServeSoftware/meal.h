@@ -11,7 +11,7 @@
 class Meal
 {
 public:
-	Meal() {}
+	Meal() : _price(0.f), _name("undefined") {}
 	Meal(const std::vector<std::string>& items, const float& price, const std::string& name);
 	~Meal() {}
 
@@ -22,8 +22,7 @@ public:
 	void DeleteIngredient(unsigned int i);
 	void SetMealName(const std::string& name) { _name = name; }
 
-	void SetMealSystemID(int i) { _systemID = i; }
-	int GetSysID() const { return _systemID; }
+	float GetMealPrice() const { return _price; }
 
 	std::vector<std::string> GetIngredients() { return _ingredients; }
 	void ClearIngredients() { _ingredients.clear(); }
@@ -35,8 +34,7 @@ public:
 private:	
 	std::vector<std::string> _ingredients;
 	std::vector<std::pair<std::string, std::string>> _ops;
-	float _price;
-	std::string _name;
-	int _systemID;
+	float _price = 0.f;
+	std::string _name = "undefined";
 };
 

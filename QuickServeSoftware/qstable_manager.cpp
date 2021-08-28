@@ -2,18 +2,27 @@
 #include "qssystem.h"
 #include "qsconsts.h"
 #include "qssystem.h"
-#include "qsorderdiag.h"
+#include "qssystemorder.h"
+#include "dialogs/qsorderdiag.h"
 
 QSTableManager::QSTableManager(QSSystem* sys, wxPanel* parent) : wxPanel(parent, qsc::ID_TABLE_MANAGER, wxDefaultPosition)
 {
 	_sys = sys;
+	
 	// TODO: Get the table layout from the system
 	for (int i = 0; i < 10; i++) {
-		this->_tables.push_back(std::pair<QSTable, wxButton*>
-			(QSTable(i), new wxButton(this, 12008 + i, std::to_string(i), wxPoint(0, i * 50), wxSize(50, 50))));
-		Connect(12008 + i, wxEVT_BUTTON, wxCommandEventHandler(QSTableManager::OnTableClick));
+
+		// create the new table in the table manager
+		this->_tables.push_back(new QSTable(i));
+		
+		// create a button for the table
+		this->_table_buttons.push_back(new wxButton(this, qsc::ID_TABLE_CLICK, std::to_string(i), wxPoint(0, i * 50), wxSize(50, 50)));
+		
+		// connect the button up to its event handler
+		Connect(qsc::ID_TABLE_CLICK, wxEVT_BUTTON, wxCommandEventHandler(QSTableManager::OnTableClick));
+		this->_table_buttons.back()->SetClientData((void*)_tables.back());
 	}
-	
+
 	Connect(qsc::ID_TABLE_MANAGER, wxEVT_LEFT_DOWN, wxCommandEventHandler(QSTableManager::OnClick));
 	
 	this->SetBackgroundColour(wxColour(148, 150, 150, 255));
@@ -22,11 +31,17 @@ QSTableManager::QSTableManager(QSSystem* sys, wxPanel* parent) : wxPanel(parent,
 
 QSTableManager::~QSTableManager()
 {
+	for (int i = 0; i < _tables.size(); i++) {
+		delete _tables[i];
+	}
 }
 
+/**
+ * When a table button is clicked
+ */
 void QSTableManager::OnTableClick(wxCommandEvent& e)
 {
-	_editing_id = ((wxButton*)e.GetEventObject())->GetLabel();
+	_editing = (wxButton*)e.GetEventObject();
 
 	switch (_state) {
 	case STATE::EDIT:
@@ -41,34 +56,30 @@ void QSTableManager::OnTableClick(wxCommandEvent& e)
 		diag->ShowModal();
 		diag->Destroy();
 		
-		auto user = _sys->GetCurrentUser();
+		//auto user = _sys->GetCurrentUser();
 
 		auto label = ((wxButton*)e.GetEventObject())->GetLabel();
-		for (auto &i : _tables) {
-			if (std::to_string(i.first.GetID()) == label) {
-				for (auto& p : diag->GetMeals()) {
-					i.first.AddMeal(p->first);
-				}
-				break;
+		
+		// ensure that order was submitted successfully and meals were ordered
+		if (diag->OrderSuccessful() && diag->GetMeals().size() > 0) {
+			auto * table = (QSTable*)(((wxButton*)e.GetEventObject())->GetClientData());
+
+			std::vector<Meal> order_meals;
+			for (auto& p : diag->GetMeals()) {
+				table->AddMeal(p->first);
+				order_meals.push_back(p->first);
 			}
-		}
+
+			_sys->AddOrder(std::make_shared<QSSystemOrder>(std::to_string(table->GetID()), order_meals));
+		}	
+		
 		break;
 	}
 }
 
-wxButton* QSTableManager::GetButtonFromId(std::string id)
-{
-	wxButton* found_button = nullptr;
-	for (auto i = _tables.begin(); i != _tables.end(); ++i) {
-		if (std::to_string(i->first.GetID()) == _editing_id) {
-			found_button = i->second;
-			break;
-		}
-	}
-
-	return found_button;
-}
-
+/**
+ * When the table manager wxPanel is clicked
+ */
 void QSTableManager::OnClick(wxCommandEvent& e)
 {
 	MoveButton();
@@ -77,10 +88,8 @@ void QSTableManager::OnClick(wxCommandEvent& e)
 void QSTableManager::MoveButton()
 {
 	if (_state == STATE::EDIT) {
-		wxButton* t = GetButtonFromId(_editing_id);
-
-		if (t != nullptr) {
-			t->SetPosition(ScreenToClient(wxGetMousePosition() - (t->GetSize() / 2)));
+		if (_editing != nullptr) {
+			_editing->SetPosition(ScreenToClient(wxGetMousePosition() - (_editing->GetSize() / 2)));
 		}
 		else {
 			wxMessageBox("Could not find table in <table, button> map!");

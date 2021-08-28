@@ -45,16 +45,16 @@
     <ClInclude Include="qstable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qsorderdiag.h">
+    <ClInclude Include="dialogs\qsorderdiag.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qsorderpreview.h">
+    <ClInclude Include="dialogs\qsitemdiag.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qsitemdiag.h">
+    <ClInclude Include="dialogs\qsitemeditdiag.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qsitemeditdiag.h">
+    <ClInclude Include="qssystemorder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -86,16 +86,16 @@
     <ClCompile Include="qstable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qsorderdiag.cpp">
+    <ClCompile Include="dialogs\qsorderdiag.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qsorderpreview.cpp">
+    <ClCompile Include="dialogs\qsitemdiag.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qsitemdiag.cpp">
+    <ClCompile Include="dialogs\qsitemeditdiag.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qsitemeditdiag.cpp">
+    <ClCompile Include="qssystemorder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

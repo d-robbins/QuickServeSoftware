@@ -1,7 +1,8 @@
 #include "qsorderdiag.h"
-#include "qsconsts.h"
+
+#include "../qsconsts.h"
+
 #include "qsitemdiag.h"
-#include "qssystem.h"
 #include "qsitemeditdiag.h"
 
 wxBEGIN_EVENT_TABLE(QSOrderDiag, wxDialog)
@@ -15,7 +16,6 @@ typedef std::pair<Meal, std::vector<std::string>> OrderData;
 QSOrderDiag::QSOrderDiag(const wxString& title) :
 	wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(qsc::DIAG_W, qsc::DIAG_H))
 {
-	
 }
 
 /**
@@ -28,7 +28,7 @@ void QSOrderDiag::OnAddItem(wxCommandEvent& e)
 	auto label = ((wxButton*)e.GetEventObject())->GetLabel();
 
 	// find the meal in the systems list of meals using the label
-	auto to_edit = std::find_if(_sys->GetMeals()->begin(), _sys->GetMeals()->end(), [label](const Meal& m) {
+	auto to_edit = std::find_if(_sys->GetSystemMeals()->begin(), _sys->GetSystemMeals()->end(), [label](const Meal& m) {
 		if (label == m.GetMealName()) {
 			return true;
 		}
@@ -150,12 +150,13 @@ void QSOrderDiag::OnPreviewDbl(wxCommandEvent& e)
 
 void QSOrderDiag::OnSubmitOrder(wxCommandEvent& e)
 {
+	_success = true;
 	this->Close();
 }
 
 QSOrderDiag::~QSOrderDiag()
 {
-	for (int i = 0; i < _sys->GetMeals()->size(); i++) {
+	for (int i = 0; i < _sys->GetSystemMeals()->size(); i++) {
 		delete _buttons[i];
 	}
 
@@ -187,15 +188,15 @@ void QSOrderDiag::SetSystem(QSSystem* s)
 	my_font.SetPointSize(12);
 	_preview->SetFont(my_font);
 
-	auto _buttons_size = _sys->GetMeals()->size();
+	auto _buttons_size = _sys->GetSystemMeals()->size();
 	_buttons = new wxButton * [_buttons_size];
 	wxGridSizer* gsizer = new wxGridSizer(_buttons_size / 2, _buttons_size / 2, 0, 0);
 
 	// Intialize all the buttons needed for meals loaded in the system
 	for (int i = 0; i < _buttons_size; i++) {
-		_button_ids.push_back((i + 10000));
-		_buttons[i] = new wxButton(_lhsbt, (i + 10000), (*(_sys->GetMeals()))[i].GetMealName());
-		Connect(_button_ids.back(), wxEVT_BUTTON, wxCommandEventHandler(QSOrderDiag::OnAddItem));
+		int button_id = (i + 10000);
+		_buttons[i] = new wxButton(_lhsbt, button_id, (*(_sys->GetSystemMeals()))[i].GetMealName());
+		Connect(button_id, wxEVT_BUTTON, wxCommandEventHandler(QSOrderDiag::OnAddItem));
 		gsizer->Add(_buttons[i], 1, wxEXPAND | wxALL);
 	}
 
@@ -213,11 +214,10 @@ void QSOrderDiag::SetSystem(QSSystem* s)
 	sizerlhs->Add(_lhsbt, 1, wxEXPAND | wxALL);
 
 	_rhssizer->Add(_rhstp, 1, wxEXPAND | wxALL);
-	_rhssizer->Layout();
 
 	_sizerrhstp->Add(_preview, 1, wxEXPAND | wxALL, 10);
-	_rhstp->SetSizer(_sizerrhstp);
 
+	_rhstp->SetSizer(_sizerrhstp);
 	_rhs->SetSizer(_rhssizer);
 	_lhs->SetSizer(sizerlhs);
 	_main->SetSizer(sizer);

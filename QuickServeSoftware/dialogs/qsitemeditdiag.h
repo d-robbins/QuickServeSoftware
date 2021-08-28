@@ -1,8 +1,8 @@
 #pragma once
 
 #include <wx/wx.h>
-#include "meal.h"
-#include "qssystem.h"
+#include "../meal.h"
+#include "../qssystem.h"
 
 class QSItemEditDiag : public wxDialog
 {

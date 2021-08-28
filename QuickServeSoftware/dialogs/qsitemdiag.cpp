@@ -1,5 +1,5 @@
 #include "qsitemdiag.h"
-#include "qsconsts.h"
+#include "../qsconsts.h"
 
 QSItemDiag::QSItemDiag(const wxString& title) : wxDialog(NULL, -1, title)
 {

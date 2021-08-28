@@ -1,11 +1,16 @@
 #pragma once
 #include <wx/wx.h>
 #include <string>
-#include "qssystem.h"
-#include "meal.h"
-#include "qsorderpreview.h"
 #include <memory>
 
+#include "../qssystem.h"
+#include "../meal.h"
+
+typedef std::shared_ptr<std::pair<Meal, std::vector<std::string>>> MealDefaultPair;
+
+/**
+ * Class to handle order creation
+ */
 class QSOrderDiag : public wxDialog
 {
 public:
@@ -15,9 +20,11 @@ public:
 	std::string GetName() { return _name; }
 	void SetSystem(QSSystem* s);
 
+	bool OrderSuccessful() { return _success; }
+
 	wxListBox* GetPreview() { return _preview; }
 
-	std::vector<std::shared_ptr<std::pair<Meal, std::vector<std::string>>>> GetMeals() { return _meals_default_pair; }
+	std::vector<MealDefaultPair> GetMeals() { return _meals_default_pair; }
 
 private:
 	void OnAddItem(wxCommandEvent& e);
@@ -26,38 +33,37 @@ private:
 
 	wxDECLARE_EVENT_TABLE();
 
-	wxButton* _submit_order = nullptr;
-
-	// Create Order Menu
+	// Order Creation UI
 
 	wxBoxSizer* _sizerrhstp = nullptr;
-	wxPanel* _lhs = nullptr;
-	wxPanel* _lhsbt = nullptr;
-	wxPanel* _lhstp = nullptr;
-	wxPanel* _rhs = nullptr;
-	wxPanel* _rhstp = nullptr;
-
-	// ---------------------------
-
-	wxButton** _buttons = nullptr;
-	std::vector<int> _button_ids;
 	wxBoxSizer* _rhssizer = nullptr;
-
-	wxListBox* _available_ingredients = nullptr;
-	wxListBox* _current_ingredients = nullptr;
-
-	wxDialog* _dlg = nullptr;
 
 	wxPanel* _main = nullptr;
 
-	std::string _orderid;
+	// left side
+	wxPanel* _lhs = nullptr;
+	
+	// left side bottom and top
+	wxPanel* _lhsbt = nullptr;
+	wxPanel* _lhstp = nullptr;
+
+	// right side and right top
+	wxPanel* _rhs = nullptr;
+	wxPanel* _rhstp = nullptr;
+
+	wxButton** _buttons = nullptr;
+	wxButton* _submit_order = nullptr;
 
 	wxListBox* _preview = nullptr;
 
-	// The default ingredients this meal gets
-	std::vector<std::shared_ptr<std::pair<Meal, std::vector<std::string>>>> _meals_default_pair;
+	// ---------------------------
+
 private:
 	QSSystem* _sys = nullptr;
 	std::string _name = "david";
+	bool _success = false;
+
+	// The default ingredients this meal gets
+	std::vector<MealDefaultPair> _meals_default_pair;
 };
 

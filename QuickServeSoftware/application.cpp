@@ -15,6 +15,5 @@ bool Application::OnInit()
     _sys = new QSSystem("items.txt");
     _sys->Show();
 
-
     return true;
 }
