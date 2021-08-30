@@ -7,8 +7,6 @@
 
 using namespace nlohmann;
 
-int QS_MEAL_SYS_ID = 0;
-
 QSSystem::QSSystem(std::string inventory) : wxFrame(nullptr, wxID_ANY, "QS", wxDefaultPosition, wxSize(1280, 720)) {
 
 	// BACKEND ----------------------------------------------------
@@ -35,8 +33,10 @@ QSSystem::QSSystem(std::string inventory) : wxFrame(nullptr, wxID_ANY, "QS", wxD
 	
 	_menu_edit_table = new wxMenu;
 	_menu_edit_table->Append(qsc::ID_FILE_EDIT_TABLE, wxT("Configure Table Layout"));
+	
 	Connect(qsc::ID_FILE_EDIT_TABLE, wxEVT_COMMAND_MENU_SELECTED,
 		wxCommandEventHandler(QSSystem::OnToggleEditTables));
+
 	_menu->Append(_menu_edit_table, wxT("File"));
 
 	SetMenuBar(_menu);
@@ -45,8 +45,7 @@ QSSystem::QSSystem(std::string inventory) : wxFrame(nullptr, wxID_ANY, "QS", wxD
 }
 
 void QSSystem::AddOrder(std::shared_ptr<QSSystemOrder> order)
-{
-	
+{	
 	this->_orders.push_back(order);
 }
 
